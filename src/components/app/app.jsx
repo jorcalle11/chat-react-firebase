@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import firebase from 'firebase'
-import Nav from './nav'
+import Nav from '../nav/nav'
+import WrapperChat from '../chat/chat'
+import Alert from '../alert/alert'
 
 class App extends Component {
   constructor() {
@@ -29,6 +31,14 @@ class App extends Component {
     })
   }
 
+  renderChat() {
+    if (this.state.user){
+      return <WrapperChat user={this.state.user} />
+    } else {
+      return <Alert message="Tienes que autenticarte para ver tus mensajes" color="yellow accent-3" />
+    }
+  }
+
   render() {
     return (
       <section>
@@ -38,6 +48,7 @@ class App extends Component {
           onAuth={this.handleLogin}
           onLogout={this.handleLogout}>
         </Nav>
+        {this.renderChat()}
       </section>
     )
   }
