@@ -12,7 +12,7 @@ const ChatForm = ({onSendMessage}) => {
   }
 
   return (
-    <form className="page-footer red lighten-4" onSubmit={sendMessage}>
+    <form className="page-footer" onSubmit={sendMessage}>
       <div className="container row">
         <div className="col s9">
           <div className="input-field">

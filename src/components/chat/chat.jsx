@@ -1,8 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 import firebase from 'firebase'
 import './wrapperChat.styl'
-import ChatRow from './chatRow/chatRow'
+import ChatList from './chatList/chatList'
 import ChatForm from './chatForm/chatForm'
+
+const BOT_AVATAR = 'http://res.cloudinary.com/dgmr4poex/image/upload/v1483040037/rey_uxd0vm.jpg'
+const BOT_NAME = 'Melchor'
 
 class WrapperChat extends Component {
   constructor(props){
@@ -18,6 +21,10 @@ class WrapperChat extends Component {
         messages: this.state.messages.concat(snapshot.val())
       })
     })
+    
+    if (this.state.count < 1) {
+      this.handleBotMessage('bienvenido')
+    }
   }
 
   componentWillUnmount() {
@@ -33,13 +40,43 @@ class WrapperChat extends Component {
       date: Date.now()
     }
     this.messagesDB.push(message)
+    this.responseBot(message.text.toLowerCase())
+  }
+
+  responseBot(word){
+    if (this.state.count > 4) {
+      this.handleBotMessage('despedida')
+    } else {
+      if (word.includes('react')) this.handleBotMessage('react')
+      else if (word.includes('polimer')) this.handleBotMessage('polimer')
+      else if (word.includes('python')) this.handleBotMessage('python')
+      else if (word.includes('angular')) this.handleBotMessage('angular')
+      else if (word.includes('java')) this.handleBotMessage('java')
+      else if (word.includes('android')) this.handleBotMessage('android')
+      else this.handleBotMessage('default')
+    }
+    this.setState({count: this.state.count + 1})
+  }
+
+  handleBotMessage(word) {
+    const firebaseBot = firebase.database().ref(`bot/${word}`)
+    firebaseBot.once('value')
+      .then(snapshot => {
+        setTimeout(() => {
+          this.messagesDB.push({
+            text: snapshot.val(),
+            avatar: BOT_AVATAR,
+            displayName: BOT_NAME,
+            date: Date.now()
+          })
+        },1200)
+      })
   }
 
   render() {
-    const { messages } = this.state
     return (
       <section>
-        {messages.map(message => <ChatRow message={message} key={message.date} />).reverse()}
+        <ChatList messages={this.state.messages} nameBot={BOT_NAME}></ChatList>
         <ChatForm onSendMessage={this.sendMessage}></ChatForm>
       </section>
     )

@@ -12,7 +12,7 @@ const dirSource = path.resolve('src')
 module.exports = {
   context: dirSource,
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:3000',
+    'webpack-dev-server/client?http://0.0.0.0:'+port,
     'webpack/hot/only-dev-server',
     './index.jsx',
   ],
@@ -47,6 +47,6 @@ module.exports = {
     quiet: true, // for show webpack-dashboard
     contentBase: dirSource,
     host: '0.0.0.0',
-    port: port,
+    port: port
   }
 }
